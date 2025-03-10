@@ -1,56 +1,82 @@
 import java.util.*;
-public class quicksoert
+class QuickSort
 {
-	public static int partition(int[] a,int low,int high)
+	public static void quicksort(int[] arr,int low,int high)
 	{
-		int pivot = a[low];
-		int i = low+1;
-		int j = high;
-		while(i<=j)
+		if(low<high)
 		{
-			while(i<=j && a[i] <= pivot)
+			int pivot = partition(arr,low,high);
+			quicksort(arr,low,pivot-1);
+			quicksort(arr,pivot+1,high);
+		}
+	}
+	public static int partition(int[] arr,int low,int high)
+	{
+		int pivot=arr[high];
+		int i=low-1;
+		for(int j=low;j<high;j++)
+		{
+			if(arr[j]<=pivot)
+			{
 				i++;
-			while(i<=j && a[j] >= pivot)
-				j--;
-			if(i<j)
-				interchange(a,i,j);
+				int temp=arr[i];
+				arr[i]=arr[j];
+				arr[j]=temp;
+			}
 		}
-		interchange(a,low,j);
-		return j;
+		int temp=arr[i+1];
+		arr[i+1]=arr[high];
+		arr[high]=temp;
+		return i+1;
 	}
-	public static void interchange(int[] a,int i,int j)
+	public static void measureExeTime(int []arr)
 	{
-		int temp = a[i];
-		a[i] = a[j];
-		a[j] = temp;
-	}
-	public static void quickSort(int[] a,int low,int high)
-	{
-		if(low < high)
-		{
-			int j = partition(a,low,high);
-			quickSort(a,low,j-1);
-			quickSort(a,j+1,high);
-		}
+		long startTime=System.nanoTime();
+		quicksort(arr,0,arr.length-1);
+		long endTime=System.nanoTime();
+		long duration=endTime-startTime;
+		System.out.println("Execution Time(in nanoseconds):"+duration);
+		System.out.println("Sorted Arrays: "+ Arrays.toString(arr));
 	}
 	public static void main(String args[])
 	{
-		Scanner scanner = new Scanner(System.in);
-		System.out.println("Enter the number of elements in the array:");
-		int n = scanner.nextInt();
-		int[] array = new int[n];
-		System.out.println("Enter the elments of the array:");
-		for(int i = 0; i < n; i++)
+		Random random=new Random();
+		int n=10;
+		int[] avgCase=new int[n];
+		for(int i=0;i<n;i++)
 		{
-			array[i] = scanner.nextInt();
+			avgCase[i]=random.nextInt(100);
 		}
-		quickSort(array, 0, array.length - 1);
-		System.out.println("Sorted array");
-		for(int num : array)
+		System.out.println("Average Case(Random Array):");
+		measureExeTime(avgCase.clone());
+		int[] bestCase=new int[n];
+		for(int i=0;i<n;i++)
 		{
-			System.out.print(num + " ");
+			bestCase[i]=i;
 		}
-		scanner.close();
+		System.out.println("BestCase(Sorted Array):");
+		measureExeTime(bestCase.clone());
+		int[] worstCase=new int[n];
+		for(int i=0;i<n;i++)
+		{
+			worstCase[i]=n-i-1;
+		}
+		System.out.println("worst Case(Reverse Sorted Array):");
+		measureExeTime(worstCase.clone());
 	}
-}
-			
+}	
+
+
+
+
+OUTPUT:Average Case(Random Array):
+Execution Time(in nanoseconds):3818
+Sorted Arrays: [11, 18, 38, 50, 53, 55, 73, 78, 92, 98]
+BestCase(Sorted Array):
+Execution Time(in nanoseconds):3025
+Sorted Arrays: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+worst Case(Reverse Sorted Array):
+Execution Time(in nanoseconds):2612
+Sorted Arrays: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+
